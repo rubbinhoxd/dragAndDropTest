@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
+    "react-icons": "^4.3.1",
+    "react-modal": "^3.15.1",
+    "styled-components": "^5.3.5"
+  }
+}

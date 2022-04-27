@@ -1,6 +1,6 @@
-
+import { FaRegWindowClose } from 'react-icons/fa'
 import { createGlobalStyle } from 'styled-components';
-
+import styled from 'styled-components';
 export default createGlobalStyle`
   * {
     margin: 0;
@@ -70,6 +70,8 @@ export default createGlobalStyle`
       font-weight: bold;
       font-size: 20px;
       margin-top: 1.5rem;
+      cursor: pointer;
+
     }
   }
 
@@ -124,8 +126,21 @@ export default createGlobalStyle`
       font-weight: bold;
       font-size: 20px;
       margin-top: 1.5rem;
+      cursor: pointer;
     }
 
   }
+`;
+
+export const CloseModal = styled(FaRegWindowClose)`
+
+  position:absolute;
+  right: 1.5rem;
+  top: 1.5rem;
+  border: 0;
+  background: transparent;
+  
+  cursor: pointer;
+
 
 `;

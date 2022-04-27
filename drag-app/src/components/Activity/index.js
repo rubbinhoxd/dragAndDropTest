@@ -5,6 +5,7 @@ import Modal from 'react-modal';
 import { useState } from 'react';
 
 import { Container } from './styles';
+import { CloseModal } from '../../styles/global';
 
 export default function Activity( {data, id} ){
     
@@ -47,12 +48,15 @@ export default function Activity( {data, id} ){
                 overlayClassName='react-modal-activity'
                 className='react-modal-contentActivity'
             >
-                <div className="modalActivity">
+                <div className="modalActivity"> 
                     <h2>Editar Atividade</h2>
                     <input  
                     placeholder="Editar nova Atividade"
                     />
                     <button type='submit'>Salvar</button>
+                    <CloseModal
+                        onClick={handleCloseActivity}
+                    />
                 </div>
             </Modal>
         </Container>

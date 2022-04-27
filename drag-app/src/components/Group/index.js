@@ -4,12 +4,20 @@ import Activity from '../Activity';
 import { useState } from 'react';
 import {useDrop} from 'react-dnd';
 import Modal from 'react-modal';
+import { CloseModal } from '../../styles/global';
 
 export default function Group( { data }){
+    //Editing group in title
+    const [viewButton, setViewButton] = useState(true);
     
+    function handleChangeButton(){
+        setViewButton(false);
+    }
+
+
     //Modal of button 'New Card'
     const [isNewGroupModalOpen, setIsNewGroupModalOpen] = useState(false);
-
+    
     function handleOpenNewGroupModal() {
         setIsNewGroupModalOpen(true); //modal aberto
     }
@@ -40,7 +48,12 @@ export default function Group( { data }){
         >
             <header>
                 {/* <input type="button" className="btn-primary"/> */}
-                <button className="btn-primary">{data.title}</button>
+                <button 
+                className="btn-primary"
+                onClick={handleChangeButton}
+                >
+                    {data.title}
+                </button>
             </header>
             <div style={{display: 'flex', alignItems: 'center'}}>
                 <ul style={{width: '90%'}}>
@@ -59,6 +72,9 @@ export default function Group( { data }){
                 className='react-modal-content'
             >
                 <div className="modalGroup">
+                    <CloseModal 
+                        onClick={handleCloseNewGroupModal}
+                    />
                     <h2>Cadastrar Card</h2>
                     <input  
                     placeholder="Cadastrar novo Card"

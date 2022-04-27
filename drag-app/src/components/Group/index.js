@@ -10,6 +10,8 @@ export default function Group( { data }){
     //Editing group in title
     const [viewButton, setViewButton] = useState(true);
     
+    const [titleGroup, setTitleGroup] = useState(data.title);
+
     function handleChangeButton(){
         setViewButton(false);
     }
@@ -25,6 +27,13 @@ export default function Group( { data }){
     function handleCloseNewGroupModal() {
         setIsNewGroupModalOpen(false); //modal fechado
     }
+
+    const handleKeypress = (e) => {
+        if (e.keyCode || e.which === 13) {
+            setViewButton(true);
+        }
+      };
+    
 
 
     const [{isOver}, drop] = useDrop(() => ({
@@ -47,13 +56,21 @@ export default function Group( { data }){
         ref={drop}
         >
             <header>
-                {/* <input type="button" className="btn-primary"/> */}
-                <button 
-                className="btn-primary"
-                onClick={handleChangeButton}
-                >
-                    {data.title}
-                </button>
+                {viewButton ? (
+                    < button 
+                    className="btn-primary"
+                    onClick={handleChangeButton} 
+                    >
+                       {titleGroup}
+                   </button> 
+                ):(
+                    <input
+                        type="text"
+                        className="btn-primary"
+                        onChange={(e) => setTitleGroup(e.target.value)}
+                        onKeyPress={(e) => handleKeypress(e)}
+          />
+                )}
             </header>
             <div style={{display: 'flex', alignItems: 'center'}}>
                 <ul style={{width: '90%'}}>

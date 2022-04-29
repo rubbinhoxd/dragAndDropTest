@@ -28,6 +28,10 @@ export const Container = styled.div`
             filter: brightness(0.9);
         }
 
+        &::placeholder{
+            color:white;
+        }
+
     }
     .btn-secundary{
         background: transparent;

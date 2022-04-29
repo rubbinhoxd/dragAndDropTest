@@ -27,8 +27,23 @@ export default function Group( { data }){
     function handleCloseNewGroupModal() {
         setIsNewGroupModalOpen(false); //modal fechado
     }
+    //add new activity
 
-    const handleKeypress = (e) => {
+    const [title, setTitle] = useState('');
+
+    const [arrayList, setArrayList] = useState(data.cards);
+    
+    function handleNewActivity(){
+        const data = {
+            id: 10,
+            content: title
+        }
+        setArrayList([...arrayList, data]);
+        handleCloseNewGroupModal(false);
+
+    }
+
+    const handleKeypress = (e) => { //função de enviar com enter
         if (e.keyCode || e.which === 13) {
             setViewButton(true);
         }
@@ -36,7 +51,7 @@ export default function Group( { data }){
     
 
 
-    const [{isOver}, drop] = useDrop(() => ({
+    const [, drop] = useDrop(() => ({
         accept: "ACTIVITY",
         drop: (item) => addActivityToGroup(item.id),
         collect: (monitor) => ({
@@ -67,6 +82,7 @@ export default function Group( { data }){
                     <input
                         type="text"
                         className="btn-primary"
+                        placeholder="Digite aqui..."
                         onChange={(e) => setTitleGroup(e.target.value)}
                         onKeyPress={(e) => handleKeypress(e)}
           />
@@ -74,7 +90,7 @@ export default function Group( { data }){
             </header>
             <div style={{display: 'flex', alignItems: 'center'}}>
                 <ul style={{width: '90%'}}>
-                    { data.cards.map(card => <Activity key= {card.id} data={card}/>) }
+                    { arrayList.map(card => <Activity key= {card.id} data={card}/>) }
                 </ul>
             </div>
             <button 
@@ -93,10 +109,16 @@ export default function Group( { data }){
                         onClick={handleCloseNewGroupModal}
                     />
                     <h2>Cadastrar Card</h2>
-                    <input  
+                    <input type="text"
                     placeholder="Cadastrar novo Card"
+                    onChange={(e) => setTitle(e.target.value)} //pegando o text
                     />
-                    <button type='submit'>Salvar</button>
+                    <button type='submit' 
+                    onClick={handleNewActivity}
+
+                    >
+                        Salvar
+                    </button>
                 </div>
                 
             </Modal>

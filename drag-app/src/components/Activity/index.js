@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from "react";
 
 import { useDrag } from 'react-dnd';
 import Modal from 'react-modal';
@@ -21,6 +21,8 @@ export default function Activity( {data, id} ){
         setIsEditOfActivity(false);
     }
 
+    //Implementation Drag and drop
+
     const [{isDragging}, drag] = useDrag(() => ({
         type:"ACTIVITY",
         item: {id: data},
@@ -29,6 +31,25 @@ export default function Activity( {data, id} ){
         }),
     }));
 
+    //Edit Activity
+    const [title, setTitle] = useState('');
+
+    const [newContent, setNewContent] = useState('');
+
+    const [arrayList, setArrayList] = useState('');
+
+
+    // data.content = newContent;
+
+    function handleEditActivity(id){
+        const data = arrayList.map(item => {
+            if(item.id === id){
+                return item.content = newContent;
+            }
+            setNewContent(data);
+            handleCloseActivity(false);
+        });
+    }
     
     
 
@@ -49,14 +70,19 @@ export default function Activity( {data, id} ){
                 className='react-modal-contentActivity'
             >
                 <div className="modalActivity"> 
-                    <h2>Editar Atividade</h2>
-                    <input  
-                    placeholder="Editar nova Atividade"
-                    />
-                    <button type='submit'>Salvar</button>
                     <CloseModal
                         onClick={handleCloseActivity}
                     />
+                    <h2>Editar Atividade</h2>
+                    <input type="text" 
+                    placeholder="Editar nova Atividade"
+                    onChange={(e) => setTitle(e.target.value)}
+                    />
+                    <button type='submit'
+                        onClick={() => handleEditActivity(id)}
+                    >
+                        Salvar
+                    </button>
                 </div>
             </Modal>
         </Container>

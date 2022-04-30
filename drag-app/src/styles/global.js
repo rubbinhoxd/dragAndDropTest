@@ -71,7 +71,6 @@ export default createGlobalStyle`
       font-size: 20px;
       margin-top: 1.5rem;
       cursor: pointer;
-
     }
   }
 

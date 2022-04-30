@@ -109,11 +109,13 @@ export default function Group( { data }){
                         onClick={handleCloseNewGroupModal}
                     />
                     <h2>Cadastrar Card</h2>
-                    <input type="text"
+                    <input 
+                    type="text"
                     placeholder="Cadastrar novo Card"
                     onChange={(e) => setTitle(e.target.value)} //pegando o text
                     />
-                    <button type='submit' 
+                    <button 
+                    type='submit' 
                     onClick={handleNewActivity}
 
                     >

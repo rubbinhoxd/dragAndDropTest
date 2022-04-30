@@ -21,6 +21,9 @@ export default function Activity( {data, id} ){
         setIsEditOfActivity(false);
     }
 
+    // const toggleActivityModal = () => setIsEditOfActivity(!isEditOfActivity)
+
+
     //Implementation Drag and drop
 
     const [{isDragging}, drag] = useDrag(() => ({
@@ -36,7 +39,7 @@ export default function Activity( {data, id} ){
 
     const [newContent, setNewContent] = useState('');
 
-    const [arrayList, setArrayList] = useState('');
+    const [arrayList, setArrayList] = useState(data.cards);
 
 
     // data.content = newContent;
@@ -46,9 +49,9 @@ export default function Activity( {data, id} ){
             if(item.id === id){
                 return item.content = newContent;
             }
-            setNewContent(data);
-            handleCloseActivity(false);
-        });
+        })
+        setArrayList([...arrayList, data]);
+        handleCloseActivity(false);
     }
     
     
@@ -56,25 +59,28 @@ export default function Activity( {data, id} ){
     // dragRef(dropRef(ref)); //ref possui referencia tanto do drag quanto do drop
     
     return (
+        <>
         <Container 
         ref={drag}
         isDragging={isDragging}
         style = {{border: isDragging ? "5px solid rgba(50, 13, 241, 0.4)": "0px"}}
-        onClick = {handleOpenActivity}
+        onClick = {()=> handleOpenActivity()}
         > 
             <p>{data.content}</p>
-            <Modal 
+        </Container>
+        <Modal 
                 isOpen={isEditOfActivity}
-                onRequestClose={handleCloseActivity}
+                onRequestClose={() => handleCloseActivity()}
                 overlayClassName='react-modal-activity'
                 className='react-modal-contentActivity'
             >
                 <div className="modalActivity"> 
                     <CloseModal
-                        onClick={handleCloseActivity}
+                        onClick={()=> handleCloseActivity()}
                     />
                     <h2>Editar Atividade</h2>
-                    <input type="text" 
+                    <input 
+                    type="text" 
                     placeholder="Editar nova Atividade"
                     onChange={(e) => setTitle(e.target.value)}
                     />
@@ -85,6 +91,8 @@ export default function Activity( {data, id} ){
                     </button>
                 </div>
             </Modal>
-        </Container>
+        </>
+        
+                
     )
 }

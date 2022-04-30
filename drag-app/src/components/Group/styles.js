@@ -58,12 +58,12 @@ export const Container = styled.div`
         margin-top:10px;
         margin-left: 10px;
     }
-    .modalContainer h2{
+    /* .modalContainer h2{
         
             color: bold;
             font-size: 300px;
             margin-bottom: 2rem;
-        }
+        } */
         /* input{
             width: 100%;
             padding: 0 1.5rem;

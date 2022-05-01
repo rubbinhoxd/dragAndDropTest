@@ -1,24 +1,34 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Container } from './styles';
 import Activity from '../Activity';
 import { useState } from 'react';
 import {useDrop} from 'react-dnd';
 import Modal from 'react-modal';
 import { CloseModal } from '../../styles/global';
+import { api } from "../../services/api";
 
-export default function Group( { data }){
+export default function Group( { id, name }){
     //Editing group in title
     const [viewButton, setViewButton] = useState(true);
+    const [titleGroup, setTitleGroup] = useState(name);
+    const [title, setTitle] = useState('');
+    const [arrayList, setArrayList] = useState([]);
+    const [isNewGroupModalOpen, setIsNewGroupModalOpen] = useState(false);
     
-    const [titleGroup, setTitleGroup] = useState(data.title);
+    useEffect(() => {
+        loadingActivies()
+    }, []);
+
+    const loadingActivies = () => {
+        api.get(`/group/${id}`).then((response) => {
+            setArrayList(response.data.activities);
+        })
+    }
 
     function handleChangeButton(){
         setViewButton(false);
     }
-
-
     //Modal of button 'New Card'
-    const [isNewGroupModalOpen, setIsNewGroupModalOpen] = useState(false);
     
     function handleOpenNewGroupModal() {
         setIsNewGroupModalOpen(true); //modal aberto
@@ -29,28 +39,14 @@ export default function Group( { data }){
     }
     //add new activity
 
-    const [title, setTitle] = useState('');
-
-    const [arrayList, setArrayList] = useState(data.cards);
-    
-    function handleNewActivity(){
-        const data = {
-            id: 10,
-            content: title
-        }
-        setArrayList([...arrayList, data]);
-        handleCloseNewGroupModal(false);
-
-    }
 
     const handleKeypress = (e) => { //função de enviar com enter
         if (e.keyCode || e.which === 13) {
+            handleUpdateTitle(titleGroup)
             setViewButton(true);
         }
       };
     
-
-
     const [, drop] = useDrop(() => ({
         accept: "ACTIVITY",
         drop: (item) => addActivityToGroup(item.id),
@@ -59,12 +55,29 @@ export default function Group( { data }){
         }),
     }));
 
-
     const addActivityToGroup = (id) => {
         console.log(id);
         // const listActivity = listActivity.filter((activity) => id === activity.id)
-
     };
+
+    const handleUpdateTitle = (value) => {
+        api.put(`/group/${id}`, {
+            nameOfGroup: value
+        }).then((response) => {
+            setTitleGroup(response.data.nameOfGroup);
+
+        })
+    }
+
+    const handleAddNewActivity = () => {
+        api.post(`/activity`, {
+            nameOfActivity: title,
+            idGroup: id
+        }).then(() => {
+            loadingActivies();
+            handleCloseNewGroupModal();
+        })
+    }
 
     return(
         <Container 
@@ -90,12 +103,13 @@ export default function Group( { data }){
             </header>
             <div style={{display: 'flex', alignItems: 'center'}}>
                 <ul style={{width: '90%'}}>
-                    { arrayList.map(card => <Activity key= {card.id} data={card}/>) }
+                    { arrayList.map(card => <Activity id= {card.id} name={card.nameOfActivity} idGroup={id} Load={loadingActivies}/>) }
                 </ul>
             </div>
             <button 
-            class="btn-secundary" 
-            onClick={handleOpenNewGroupModal}>
+                class="btn-secundary" 
+                onClick={handleOpenNewGroupModal}>
+                
                 Novo Card +
             </button>
             <Modal 
@@ -110,14 +124,14 @@ export default function Group( { data }){
                     />
                     <h2>Cadastrar Card</h2>
                     <input 
-                    type="text"
-                    placeholder="Cadastrar novo Card"
-                    onChange={(e) => setTitle(e.target.value)} //pegando o text
+                        type="text"
+                        placeholder="Cadastrar novo Card"
+                        onChange={(e) => setTitle(e.target.value)} //pegando o text
                     />
                     <button 
-                    type='submit' 
-                    onClick={handleNewActivity}
-
+                        type='submit' 
+                        onClick={handleAddNewActivity}
+                        
                     >
                         Salvar
                     </button>

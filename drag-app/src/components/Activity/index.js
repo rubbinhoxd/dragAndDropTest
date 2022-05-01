@@ -4,10 +4,13 @@ import { useDrag } from 'react-dnd';
 import Modal from 'react-modal';
 import { useState } from 'react';
 
-import { Container } from './styles';
+import { Container, ClockWrapper, ClockInput, Clock, ClockSpan } from './styles';
 import { CloseModal } from '../../styles/global';
+import { api } from "../../services/api";
 
-export default function Activity( {data, id} ){
+
+
+export default function Activity( { name, id, idGroup, Load } ){
     
     //Modal to the Edit of Activity
 
@@ -28,32 +31,34 @@ export default function Activity( {data, id} ){
 
     const [{isDragging}, drag] = useDrag(() => ({
         type:"ACTIVITY",
-        item: {id: data},
+        item: {id: name},
         collect: (monitor) => ({
             isDragging: !!monitor.isDragging(),
         }),
     }));
 
     //Edit Activity
-    const [title, setTitle] = useState('');
+    // const [title, setTitle] = useState('');
 
     const [newContent, setNewContent] = useState('');
 
-    const [arrayList, setArrayList] = useState(data.cards);
+    // const [arrayList, setArrayList] = useState(data);
 
-
-    // data.content = newContent;
-
-    function handleEditActivity(id){
-        const data = arrayList.map(item => {
-            if(item.id === id){
-                return item.content = newContent;
-            }
-        })
-        setArrayList([...arrayList, data]);
-        handleCloseActivity(false);
-    }
     
+    const handleEditActivity = () => {
+        if(newContent === ''){
+            return;
+        }
+        api.put(`/activity/${id}`, {
+            idGroup: idGroup,
+            nameOfActivity: newContent,
+        }).then((res) => {
+            console.log('*', res );
+            Load();
+            handleCloseActivity();
+        }) 
+    }
+
     
 
     // dragRef(dropRef(ref)); //ref possui referencia tanto do drag quanto do drop
@@ -66,7 +71,18 @@ export default function Activity( {data, id} ){
         style = {{border: isDragging ? "5px solid rgba(50, 13, 241, 0.4)": "0px"}}
         onClick = {()=> handleOpenActivity()}
         > 
-            <p>{data.content}</p>
+            <p>{name}</p>
+            <ClockWrapper>
+                <ClockInput />
+                <Clock />
+                <ClockSpan />
+            </ClockWrapper>
+                
+
+            {/* <div className="btn-checkbox">
+                <input type="checkbox"/>
+                <span>foda-se</span>
+            </div> */}
         </Container>
         <Modal 
                 isOpen={isEditOfActivity}
@@ -80,12 +96,14 @@ export default function Activity( {data, id} ){
                     />
                     <h2>Editar Atividade</h2>
                     <input 
+                    value={newContent}
                     type="text" 
-                    placeholder="Editar nova Atividade"
-                    onChange={(e) => setTitle(e.target.value)}
+                    onChange={(e) => setNewContent(e.target.value)}
                     />
-                    <button type='submit'
-                        onClick={() => handleEditActivity(id)}
+                    <button 
+                    type='button'
+                    onClick={() => handleEditActivity(id)}
+
                     >
                         Salvar
                     </button>

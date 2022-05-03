@@ -3,6 +3,7 @@ import { Container } from './styles';
 import Activity from '../Activity';
 import { useState } from 'react';
 import {useDrop} from 'react-dnd';
+import { Droppable } from "react-beautiful-dnd";
 import Modal from 'react-modal';
 import { CloseModal } from '../../styles/global';
 import { api } from "../../services/api";
@@ -47,13 +48,13 @@ export default function Group( { id, name }){
         }
       };
     
-    const [, drop] = useDrop(() => ({
-        accept: "ACTIVITY",
-        drop: (item) => addActivityToGroup(item.id),
-        collect: (monitor) => ({
-            isOver: !!monitor.isOver(),
-        }),
-    }));
+    // const [, drop] = useDrop(() => ({
+    //     accept: "ACTIVITY",
+    //     drop: (item) => addActivityToGroup(item.id),
+    //     collect: (monitor) => ({
+    //         isOver: !!monitor.isOver(),
+    //     }),
+    // }));
 
     const addActivityToGroup = (id) => {
         console.log(id);
@@ -81,7 +82,7 @@ export default function Group( { id, name }){
 
     return(
         <Container 
-        ref={drop}
+        // ref={drop}
         >
             <header>
                 {viewButton ? (
@@ -98,14 +99,23 @@ export default function Group( { id, name }){
                         placeholder="Digite aqui..."
                         onChange={(e) => setTitleGroup(e.target.value)}
                         onKeyPress={(e) => handleKeypress(e)}
-          />
+                    />
                 )}
             </header>
-            <div style={{display: 'flex', alignItems: 'center'}}>
-                <ul style={{width: '90%'}}>
-                    { arrayList.map(card => <Activity id= {card.id} name={card.nameOfActivity} idGroup={id} Load={loadingActivies}/>) }
-                </ul>
-            </div>
+            <Droppable droppableId='activities'> 
+                {(provided) => (
+                    <div 
+                    style={{display: 'flex', alignItems: 'center'}}
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    >
+                    <ul style={{width: '90%'}}>
+                        { arrayList.map(card => <Activity id= {card.id} name={card.nameOfActivity} idGroup={id} Load={loadingActivies} Data = {card.dateOfActivity} checked = {card.checkList}/>) }
+                    </ul>
+                </div>
+                )}  
+                
+            </Droppable>
             <button 
                 class="btn-secundary" 
                 onClick={handleOpenNewGroupModal}>
@@ -131,7 +141,7 @@ export default function Group( { id, name }){
                     <button 
                         type='submit' 
                         onClick={handleAddNewActivity}
-                        
+
                     >
                         Salvar
                     </button>

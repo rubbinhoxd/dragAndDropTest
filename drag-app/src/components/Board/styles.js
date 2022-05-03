@@ -9,7 +9,7 @@ export const Container = styled.div`
     padding: 30px 0; //espaça do header
     //height: calc(100% - 80px);
     
-    button{
+    .btn-new-group{
         box-sizing: border-box;
         background: rgba(239,237,238);
         font-size: 26px;

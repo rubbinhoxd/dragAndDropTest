@@ -31,48 +31,66 @@ export const Container = styled.div`
 export const ClockWrapper = styled.div`
     margin-left: 0px;
     width: 50%;
-    background: black;
+    background: transparent;
     position: relative;
-    top: 0;
+    top: 7px;
     z-index: 2;
     max-height: 50px;
-    border:transparent;
+    border: transparent;
     border-radius: 5px;
+`;
+
+export const ClockButton = styled.button`
+
+    width: 100%;
+    height: 20px;
+    font-size: 13px;
+    padding: 0 10px 0 10px;
+    background: transparent;
+    border-radius: 5px;
+    color: black;
+    outline: 0;
+    border:transparent;
+
+    cursor: pointer;
 `;
 
 export const ClockInput = styled.input`
 
     width: 100%;
     height: 20px;
-    font-size: 16px;
+    font-size: 13px;
     padding: 0 10px 0 10px;
-    background: rgb(245,13,13);
+    background: transparent;
     border-radius: 5px;
-    color: white;
+    color: black;
     outline: 0;
-    
-  
+    border:black;
+
+    cursor: pointer;
 `;
+
+
 
 export const Clock = styled(FaRegClock)`
     position: absolute;
     align-items: center;
     width: 15px;
-    height: 11px;
+    height: 12px;
     fill: rgb(96,0,0);
     left: 20px;
-    top: 7px;
-
+    top: 5px;
 `;
 
 export const ClockSpan = styled.span`
     display: block;
     width: 10%;
     left: 4px;
-    bottom: 4px;
-    /* background: white; */
+    bottom: 7px;
     border-radius: 2px;
     position: absolute;
-    border: 2px solid black;
-    height: 53%;
+    border: 3px solid black;
+    height: 49%;
+    background: transparent;
+
 `;

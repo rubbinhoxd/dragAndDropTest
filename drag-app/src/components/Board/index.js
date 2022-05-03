@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Group from '../Group';
-import { loadLists} from '../../services/api';
 import { api } from "../../services/api";
 
 import { Container } from './styles';
@@ -57,6 +56,7 @@ export default function Board() {
             {arrayList.map(list => <Group id={list.id} name={list.nameOfGroup} />)}
             {createGroup ? (
                 <button 
+                className = "btn-new-group"
                 style={{width:'260px', height:'50px', margin:'25px'}}
                 onClick={handleCreateGroup}
                 >

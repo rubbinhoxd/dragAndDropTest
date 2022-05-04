@@ -20,11 +20,29 @@ export default function Group( { id, name }){
         loadingActivies()
     }, []);
 
-    const loadingActivies = () => {
-        api.get(`/group/${id}`).then((response) => {
-            setArrayList(response.data.activities);
+    const loadingActivies = async () => {
+        const { data } = await api.get(`/group/${id}`);
+    
+        const activitys = data.activities.map((activity) => {
+          if (!activity.dateOfActivity) return {...activity};
+    
+          const date = new Date(activity.dateOfActivity);
+          date.setDate(date.getDate() + 1);
+    
+          return {
+            ...activity,
+            dateOfActivity: date.toLocaleDateString(
+              'pt-BR',
+              {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric',
+              }
+            ),
+          };
         })
-    }
+        setArrayList(activitys);
+      };
 
     function handleChangeButton(){
         setViewButton(false);

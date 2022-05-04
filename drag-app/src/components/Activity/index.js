@@ -6,56 +6,12 @@ import { Container, ClockWrapper, ClockButton, Clock, ClockSpan, ClockInput } fr
 import { CloseModal } from '../../styles/global';
 import { api } from "../../services/api";
 import { useState } from 'react';
-
-
-
-
-
-
-
-
+import { formatDate } from '../../util/format'
 
 export default function Activity( { name, id, idGroup, Load , Data, checked} ){
     
     
     const [items, setItems] = useState();
-
-
-    const removeFromList = (list, index) => {
-        const result = Array.from(list);
-        const [removed] = result.splice(index, 1);
-        return [removed, result];
-      };
-     
-      const addToList = (list, index, element) => {
-        const result = Array.from(list);
-        result.splice(index, 0, element);
-        return result;
-      };
-     
-      const onDragEnd = (result) => {
-        if (!result.destination) {
-          console.log(result);
-          return;
-        }
-        const listCopy = { ...items };
-        const sourceList = listCopy[result.source.droppableId];
-        const [removedElement, newSourceList] = removeFromList(
-          sourceList,
-          result.source.index
-        );
-        listCopy[result.source.droppableId] = newSourceList;
-     
-        const destinationList = listCopy[result.destination.droppableId];
-        listCopy[result.destination.droppableId] = addToList(
-          destinationList,
-          result.destination.index,
-          removedElement
-        );
-        setItems(listCopy);
-      };
-    
-    
     
     //Modal to the Edit of Activity
 
@@ -108,6 +64,9 @@ export default function Activity( { name, id, idGroup, Load , Data, checked} ){
     const [newContentData, setNewContentData] = useState('');
 
 
+    
+
+
     const handleKeypress = (e) => { //função de enviar com enter
         if (e.keyCode || e.which === 13) {
             handleEditDate(dataActivity)
@@ -134,17 +93,17 @@ export default function Activity( { name, id, idGroup, Load , Data, checked} ){
     
     return (
         <>      
-            <Draggable key={id} draggableId={id} index={idGroup}>
-                {(provided) => (
+                    
                     <Container 
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        ref={provided.innerRef}
+                        
                     // ref={drag}
                     // isDragging={isDragging}
                     // style = {{border: isDragging ? "5px solid rgba(50, 13, 241, 0.4)": "0px"}}
                     onClick = {()=> handleOpenActivity()}
                 > 
+                    <div>
+                        
+                    </div>
                     <p>{name}</p>
                      <ClockWrapper>
                 
@@ -155,18 +114,18 @@ export default function Activity( { name, id, idGroup, Load , Data, checked} ){
                                 >
                                     {dataActivity}
                             </ClockButton>
-                                <Clock />
-                                <ClockSpan />
+                                {/* <Clock />
+                                <ClockSpan /> */}
                             </>
                         ):(
                             <>
-                                <ClockInput 
+                                {/* <ClockInput 
                                     // type="date"
                                     onChange={(e) => setDataActivity(e.target.value)}
                                     onKeyPress={(e) => handleKeypress(e)}
                                 />
                                 <Clock />
-                                <ClockSpan />
+                                <ClockSpan /> */}
                             </>
                         )}
                 
@@ -177,9 +136,8 @@ export default function Activity( { name, id, idGroup, Load , Data, checked} ){
                         <span>foda-se</span>
                     </div> */}
                 </Container>
-                )}          
-                
-            </Draggable> 
+                 
+          
         <Modal 
                 isOpen={isEditOfActivity}
                 onRequestClose={() => handleCloseActivity()}

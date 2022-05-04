@@ -14,12 +14,14 @@ export default function App() {
   return (
 
      <DragDropContext>
-        <Header />
-        <Board />
+      <Header />
+      <Board />
 
-        <GlobalStyle />
+      <GlobalStyle />
     
      </DragDropContext>
+        
+   
         
 
   );

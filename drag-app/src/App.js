@@ -13,13 +13,13 @@ export default function App() {
 
   return (
 
-     <DragDropContext>
+     <>
       <Header />
       <Board />
 
       <GlobalStyle />
     
-     </DragDropContext>
+     </>
         
    
         

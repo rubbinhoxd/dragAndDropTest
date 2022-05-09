@@ -8,7 +8,7 @@ import { api } from "../../services/api";
 import { useState } from 'react';
 import { formatDate } from '../../util/format'
 
-export default function Activity( { name, id, idGroup, Load , Data, checked} ){
+export default function Activity( { name, id, idGroup, Load , Data, checked, index} ){
     
     
     const [items, setItems] = useState();
@@ -93,50 +93,59 @@ export default function Activity( { name, id, idGroup, Load , Data, checked} ){
     
     return (
         <>      
+                <Draggable draggableId={String(id)} index={index}>
+                    {
+                        (provided) => (
+                            <div 
+                                ref={provided.innerRef} 
+                                {...provided.dragHandleProps}
+                                {...provided.draggableProps}
+                            >
+                                <Container 
+                                
+                                // ref={drag}
+                                // isDragging={isDragging}
+                                // style = {{border: isDragging ? "5px solid rgba(50, 13, 241, 0.4)": "0px"}}
+                                onClick = {()=> handleOpenActivity()}
+                            > 
+                                <p>{name}</p>
+                                <ClockWrapper>
+                            
+                                    {viewButton ? (
+                                        <>
+                                            <ClockButton 
+                                            onClick={handleChangeButtonDate} 
+                                            >
+                                                {dataActivity}
+                                        </ClockButton>
+                                            {/* <Clock />
+                                            <ClockSpan /> */}
+                                        </>
+                                    ):(
+                                        <>
+                                            {/* <ClockInput 
+                                                // type="date"
+                                                onChange={(e) => setDataActivity(e.target.value)}
+                                                onKeyPress={(e) => handleKeypress(e)}
+                                            />
+                                            <Clock />
+                                            <ClockSpan /> */}
+                                        </>
+                                    )}
+                            
+                                </ClockWrapper>
+            
+                                {/* <div className="btn-checkbox">
+                                    <input type="checkbox"/>
+                                    <span>foda-se</span>
+                                </div> */}
+                            </Container>
+                            </div>
+                            
+                        )
+                    }
+                </Draggable>
                     
-                    <Container 
-                        
-                    // ref={drag}
-                    // isDragging={isDragging}
-                    // style = {{border: isDragging ? "5px solid rgba(50, 13, 241, 0.4)": "0px"}}
-                    onClick = {()=> handleOpenActivity()}
-                > 
-                    <div>
-                        
-                    </div>
-                    <p>{name}</p>
-                     <ClockWrapper>
-                
-                        {viewButton ? (
-                            <>
-                                <ClockButton 
-                                onClick={handleChangeButtonDate} 
-                                >
-                                    {dataActivity}
-                            </ClockButton>
-                                {/* <Clock />
-                                <ClockSpan /> */}
-                            </>
-                        ):(
-                            <>
-                                {/* <ClockInput 
-                                    // type="date"
-                                    onChange={(e) => setDataActivity(e.target.value)}
-                                    onKeyPress={(e) => handleKeypress(e)}
-                                />
-                                <Clock />
-                                <ClockSpan /> */}
-                            </>
-                        )}
-                
-                    </ClockWrapper>
-
-                    {/* <div className="btn-checkbox">
-                        <input type="checkbox"/>
-                        <span>foda-se</span>
-                    </div> */}
-                </Container>
-                 
           
         <Modal 
                 isOpen={isEditOfActivity}

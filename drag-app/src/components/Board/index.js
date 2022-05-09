@@ -3,7 +3,7 @@ import Group from '../Group';
 import { api } from "../../services/api";
 
 import { Container } from './styles';
-import { DragDropContext, Draggable, DraggableProvided, DraggableStateSnapshot } from "react-beautiful-dnd";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 
 export default function Board() {
@@ -14,7 +14,9 @@ export default function Board() {
     const [createGroup, setCreateGroup] = useState(true);
     const [title, setTitle] = useState('');
 
-    const [arrayList, setArrayList] = useState([]);
+    const [groups, setGroups] = useState([]);
+
+    const [activities, setActivities] = useState([]);
 
     
     
@@ -36,7 +38,8 @@ export default function Board() {
           console.log(result);
           return;
         }
-        const listCopy = { ...items };
+        console.log(result);
+        const listCopy = { ...activities };
         const sourceList = listCopy[result.source.droppableId];
         const [removedElement, newSourceList] = removeFromList(
           sourceList,
@@ -51,6 +54,7 @@ export default function Board() {
           removedElement
         );
         setItems(listCopy);
+        
       };
 
 
@@ -64,7 +68,7 @@ export default function Board() {
     //Carrega as ativs
     const loadGroup = () => {
         api.get("/group").then((response) => {
-            setArrayList(response.data);
+            setGroups(response.data);
         })
     }
 
@@ -94,29 +98,50 @@ export default function Board() {
       }
 
     return (
-    
-            <Container>
-                {arrayList.map(list => <Group id={list.id} name={list.nameOfGroup} />)}
-                {createGroup ? (
-                    <button 
-                    className = "btn-new-group"
-                    style={{width:'260px', height:'50px', margin:'25px'}}
-                    onClick={handleCreateGroup}
+            <DragDropContext 
+            onDragEnd={onDragEnd}
+            >
+              <Droppable
+                droppableId='groups'
+                type='list'
+                direction='horizontal'
+              >
+                {
+                  (provided) => (
+                    <div 
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    className='MyBoard'
                     >
-                        Novo Grupo +
-                    </button>
-                ): (
-                    <input
-                        type="text"
-                        placeholder="Digite aqui..."
-                        className= "input-new-group"
-                        style={{width:'260px', height:'50px', margin:'25px'}}
-                        onChange={(e) => setTitle(e.target.value)} //pegando o text
-                        onKeyPress={(e) => handleKeypress(e)}
-                    />
-                )   
+                    <Container>
+                        {groups.map((list, index) => <Group id={list.id} name={list.nameOfGroup} idGroup={list.idGroup} index={index} />)}
+                        {createGroup ? (
+                            <button 
+                            className = "btn-new-group"
+                            style={{width:'260px', height:'50px', margin:'25px'}}
+                            onClick={handleCreateGroup}
+                            >
+                                Novo Grupo +
+                            </button>
+                        ): (
+                            <input
+                                type="text"
+                                placeholder="Digite aqui..."
+                                className= "input-new-group"
+                                style={{width:'260px', height:'50px', margin:'25px'}}
+                                onChange={(e) => setTitle(e.target.value)} //pegando o text
+                                onKeyPress={(e) => handleKeypress(e)}
+                            />
+                        )   
+                        }  
+                    </Container>
+                    {provided.placeholder}
+                    </div>
+
+                  )
                 }
-                
-            </Container>
+              </Droppable>
+              
+             </DragDropContext>
     )
 }

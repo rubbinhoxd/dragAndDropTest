@@ -2,13 +2,12 @@ import React, { useEffect } from 'react';
 import { Container } from './styles';
 import Activity from '../Activity';
 import { useState } from 'react';
-import {useDrop} from 'react-dnd';
-import { Droppable } from "react-beautiful-dnd";
+import { Droppable, Draggable } from "react-beautiful-dnd";
 import Modal from 'react-modal';
 import { CloseModal } from '../../styles/global';
 import { api } from "../../services/api";
 
-export default function Group( { id, name }){
+export default function Group( { id, name, idGroup, index }){
     //Editing group in title
     const [viewButton, setViewButton] = useState(true);
     const [titleGroup, setTitleGroup] = useState(name);
@@ -99,73 +98,87 @@ export default function Group( { id, name }){
     }
 
     return(
-        <Container 
-        // ref={drop}
+    <>
+        
+        <Droppable 
+        droppableId={String(idGroup)}
         >
-            <header>
-                {viewButton ? (
-                    < button 
-                    className="btn-primary"
-                    onClick={handleChangeButton} 
+            {
+                (provided) => (
+                    <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
                     >
-                       {titleGroup}
-                   </button> 
-                ):(
-                    <input
-                        type="text"
+                    <Container 
+                    // ref={drop}
+                    >
+                <header>
+                    {viewButton ? (
+                        < button 
                         className="btn-primary"
-                        placeholder="Digite aqui..."
-                        onChange={(e) => setTitleGroup(e.target.value)}
-                        onKeyPress={(e) => handleKeypress(e)}
-                    />
-                )}
-            </header>
-            <Droppable droppableId='activities'> 
-                {(provided) => (
-                    <div 
-                    style={{display: 'flex', alignItems: 'center'}}
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    >
-                    <ul style={{width: '90%'}}>
-                        { arrayList.map(card => <Activity id= {card.id} name={card.nameOfActivity} idGroup={id} Load={loadingActivies} Data = {card.dateOfActivity} checked = {card.checkList}/>) }
-                    </ul>
-                </div>
-                )}  
+                        onClick={handleChangeButton} 
+                        >
+                        {titleGroup}
+                    </button> 
+                    ):(
+                        <input
+                            type="text"
+                            className="btn-primary"
+                            placeholder="Digite aqui..."
+                            onChange={(e) => setTitleGroup(e.target.value)}
+                            onKeyPress={(e) => handleKeypress(e)}
+                        />
+                    )}
+                </header>        
+                        <div 
+                        style={{display: 'flex', alignItems: 'center'}}
+                        >
+                        <ul style={{width: '90%'}}>
+                            { arrayList.map((card, index) => <Activity id= {card.id} name={card.nameOfActivity} idGroup={id} Load={loadingActivies} Data = {card.dateOfActivity} checked = {card.checkList} index={index}/>) }
+                        </ul>
+                    </div>
+                <button 
+                    class="btn-secundary" 
+                    onClick={handleOpenNewGroupModal}>
+                    
+                    Novo Card +
+                </button>
                 
-            </Droppable>
-            <button 
-                class="btn-secundary" 
-                onClick={handleOpenNewGroupModal}>
-                
-                Novo Card +
-            </button>
-            <Modal 
-                isOpen={isNewGroupModalOpen} 
-                onRequestClose={handleCloseNewGroupModal}
-                overlayClassName='react-modal-overlay'
-                className='react-modal-content'
-            >
-                <div className="modalGroup">
-                    <CloseModal 
-                        onClick={handleCloseNewGroupModal}
-                    />
-                    <h2>Cadastrar Card</h2>
-                    <input 
-                        type="text"
-                        placeholder="Cadastrar novo Card"
-                        onChange={(e) => setTitle(e.target.value)} //pegando o text
-                    />
-                    <button 
-                        type='submit' 
-                        onClick={handleAddNewActivity}
+            </Container>
+                    {provided.placeholder}
+                    </div>
+                )
+            }
+        </Droppable>
+        
 
-                    >
-                        Salvar
-                    </button>
-                </div>
-                
-            </Modal>
-        </Container>
+        <Modal 
+        isOpen={isNewGroupModalOpen} 
+        onRequestClose={handleCloseNewGroupModal}
+        overlayClassName='react-modal-overlay'
+        className='react-modal-content'
+        >
+        <div className="modalGroup">
+            <CloseModal 
+                onClick={handleCloseNewGroupModal}
+            />
+            <h2>Cadastrar Card</h2>
+            <input 
+                type="text"
+                placeholder="Cadastrar novo Card"
+                onChange={(e) => setTitle(e.target.value)} //pegando o text
+            />
+            <button 
+                type='submit' 
+                onClick={handleAddNewActivity}
+
+            >
+                Salvar
+            </button>
+        </div>
+
+        </Modal>
+    </>
     )
+
 }

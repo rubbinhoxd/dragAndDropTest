@@ -1,177 +1,174 @@
-import React from "react";
+import React from 'react';
 import { useDrag } from 'react-dnd';
 import Modal from 'react-modal';
-import { Draggable } from 'react-beautiful-dnd'
-import { Container, ClockWrapper, ClockButton, Clock, ClockSpan, ClockInput } from './styles';
+import { Draggable } from 'react-beautiful-dnd';
+import {
+  Container,
+  ClockWrapper,
+  ClockButton,
+  Clock,
+  ClockSpan,
+  ClockInput,
+} from './styles';
 import { CloseModal } from '../../styles/global';
-import { api } from "../../services/api";
+import { api } from '../../services/api';
 import { useState } from 'react';
-import { formatDate } from '../../util/format'
+import { formatDate } from '../../util/format';
 
-export default function Activity( { name, id, idGroup, Load , Data, checked, index} ){
-    
-    
-    const [items, setItems] = useState();
-    
-    //Modal to the Edit of Activity
+export default function Activity({
+  name,
+  id,
+  idGroup,
+  Load,
+  Data,
+  checked,
+  index,
+}) {
+  const [items, setItems] = useState();
 
-    const [isEditOfActivity, setIsEditOfActivity] = useState(false);
+  //Modal to the Edit of Activity
 
-    function handleOpenActivity() {
-        setIsEditOfActivity(true);
+  const [isEditOfActivity, setIsEditOfActivity] = useState(false);
+
+  function handleOpenActivity() {
+    setIsEditOfActivity(true);
+  }
+
+  function handleCloseActivity() {
+    setIsEditOfActivity(false);
+  }
+
+  // const toggleActivityModal = () => setIsEditOfActivity(!isEditOfActivity)
+
+  //Implementation Drag and drop
+
+  // const [{isDragging}, drag] = useDrag(() => ({
+  //     type:"ACTIVITY",
+  //     item: {id: name},
+  //     collect: (monitor) => ({
+  //         isDragging: !!monitor.isDragging(),
+  //     }),
+  // }));
+
+  //Edit Activity
+
+  const [newContent, setNewContent] = useState('');
+
+  const handleEditActivity = () => {
+    if (newContent === '') {
+      return;
     }
+    api
+      .put(`/activity/${id}`, {
+        idGroup: idGroup,
+        nameOfActivity: newContent,
+      })
+      .then(() => {
+        Load();
+        handleCloseActivity();
+      });
+  };
 
-    function handleCloseActivity(){
-        setIsEditOfActivity(false);
+  //Set date
+
+  const [viewButton, setViewButton] = useState(true);
+
+  const [dataActivity, setDataActivity] = useState(Data);
+
+  const [newContentData, setNewContentData] = useState('');
+
+  const handleKeypress = (e) => {
+    //função de enviar com enter
+    if (e.keyCode || e.which === 13) {
+      handleEditDate(dataActivity);
+      setViewButton(true);
     }
+  };
 
-    // const toggleActivityModal = () => setIsEditOfActivity(!isEditOfActivity)
+  const handleChangeButtonDate = () => {
+    setViewButton(false);
+  };
 
-
-    //Implementation Drag and drop
-
-    // const [{isDragging}, drag] = useDrag(() => ({
-    //     type:"ACTIVITY",
-    //     item: {id: name},
-    //     collect: (monitor) => ({
-    //         isDragging: !!monitor.isDragging(),
-    //     }),
-    // }));
-
-    //Edit Activity
-    
-    const [newContent, setNewContent] = useState('');
-    
-    const handleEditActivity = () => {
-        if(newContent === ''){
-            return;
-        }
-        api.put(`/activity/${id}`, {
-            idGroup: idGroup,
-            nameOfActivity: newContent,
-        }).then(() => {
-            Load();
-            handleCloseActivity();
-        }) 
+  const handleEditDate = () => {
+    if (newContentData === '') {
+      return;
     }
+    api
+      .put(`/activity/${id}`, {
+        idGroup: idGroup,
+        dateOfActivity: newContentData,
+      })
+      .then((response) => {
+        setDataActivity(response.data.dateOfActivity);
+      });
+  };
 
-    //Set date
-
-    const [viewButton, setViewButton] = useState(true);
-
-    const [dataActivity , setDataActivity] = useState(Data);
-
-    const [newContentData, setNewContentData] = useState('');
-
-
-    
-
-
-    const handleKeypress = (e) => { //função de enviar com enter
-        if (e.keyCode || e.which === 13) {
-            handleEditDate(dataActivity)
-            setViewButton(true);
-        }
-      };
-
-    const handleChangeButtonDate = () => {
-        setViewButton(false);
-    }
-
-    const handleEditDate = () => {
-        if(newContentData === ''){
-            return;
-        }
-        api.put(`/activity/${id}`, {
-            idGroup: idGroup,
-            dateOfActivity: newContentData
-        }).then((response) => {
-            setDataActivity(response.data.dateOfActivity)
-        })
-    }
-
-    
-    return (
-        <>      
-                <Draggable draggableId={String(id)} index={index}>
-                    {
-                        (provided) => (
-                            <div 
-                                ref={provided.innerRef} 
-                                {...provided.dragHandleProps}
-                                {...provided.draggableProps}
-                            >
-                                <Container 
-                                
-                                // ref={drag}
-                                // isDragging={isDragging}
-                                // style = {{border: isDragging ? "5px solid rgba(50, 13, 241, 0.4)": "0px"}}
-                                onClick = {()=> handleOpenActivity()}
-                            > 
-                                <p>{name}</p>
-                                <ClockWrapper>
-                            
-                                    {viewButton ? (
-                                        <>
-                                            <ClockButton 
-                                            onClick={handleChangeButtonDate} 
-                                            >
-                                                {dataActivity}
-                                        </ClockButton>
-                                            {/* <Clock />
+  return (
+    <>
+      <Draggable draggableId={String(id)} index={index}>
+        {(provided) => (
+          <div
+            ref={provided.innerRef}
+            {...provided.dragHandleProps}
+            {...provided.draggableProps}
+          >
+            <Container
+              // ref={drag}
+              // isDragging={isDragging}
+              // style = {{border: isDragging ? "5px solid rgba(50, 13, 241, 0.4)": "0px"}}
+              onClick={() => handleOpenActivity()}
+            >
+              <p>{name}</p>
+              <ClockWrapper>
+                {viewButton ? (
+                  <>
+                    <ClockButton onClick={handleChangeButtonDate}>
+                      {dataActivity}
+                    </ClockButton>
+                    {/* <Clock />
                                             <ClockSpan /> */}
-                                        </>
-                                    ):(
-                                        <>
-                                            {/* <ClockInput 
+                  </>
+                ) : (
+                  <>
+                    {/* <ClockInput 
                                                 // type="date"
                                                 onChange={(e) => setDataActivity(e.target.value)}
                                                 onKeyPress={(e) => handleKeypress(e)}
                                             />
                                             <Clock />
                                             <ClockSpan /> */}
-                                        </>
-                                    )}
-                            
-                                </ClockWrapper>
-            
-                                {/* <div className="btn-checkbox">
+                  </>
+                )}
+              </ClockWrapper>
+
+              {/* <div className="btn-checkbox">
                                     <input type="checkbox"/>
                                     <span>foda-se</span>
                                 </div> */}
-                            </Container>
-                            </div>
-                            
-                        )
-                    }
-                </Draggable>
-                    
-          
-        <Modal 
-                isOpen={isEditOfActivity}
-                onRequestClose={() => handleCloseActivity()}
-                overlayClassName='react-modal-activity'
-                className='react-modal-contentActivity'
-            >
-                <div className="modalActivity"> 
-                    <CloseModal
-                        onClick={()=> handleCloseActivity()}
-                    />
-                    <h2>Editar Atividade</h2>
-                    <input 
-                    value={newContent}
-                    type="text" 
-                    onChange={(e) => setNewContent(e.target.value)}
-                    />
-                    <button 
-                    type='button'
-                    onClick={() => handleEditActivity(id)}
+            </Container>
+          </div>
+        )}
+      </Draggable>
 
-                    >
-                        Salvar
-                    </button>
-                </div>
-            </Modal>
-        </>
-    )
+      <Modal
+        isOpen={isEditOfActivity}
+        onRequestClose={() => handleCloseActivity()}
+        overlayClassName="react-modal-activity"
+        className="react-modal-contentActivity"
+      >
+        <div className="modalActivity">
+          <CloseModal onClick={() => handleCloseActivity()} />
+          <h2>Editar Atividade</h2>
+          <input
+            value={newContent}
+            type="text"
+            onChange={(e) => setNewContent(e.target.value)}
+          />
+          <button type="button" onClick={() => handleEditActivity(id)}>
+            Salvar
+          </button>
+        </div>
+      </Modal>
+    </>
+  );
 }
